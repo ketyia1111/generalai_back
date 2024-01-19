@@ -1,4 +1,4 @@
-# General AI Back
+# General AI Back　【完了】
 
 MicrosoftのAzureを使用して、生成AIを使用した絵日記を作成しました。バックグラウンドでFlaskRESTAPIとして機能させています。
 画面は下記です。
