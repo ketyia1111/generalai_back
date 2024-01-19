@@ -7,4 +7,5 @@ MicrosoftのAzureを使用して、生成AIを使用した絵日記を作成し�
   <img src="image.png" width="100" /> 
   <img src="image-2.png" width="100" />
   <img src="image-3.png" width="100" />
+  <img src="image-4.png" width="100" />
 </p>
