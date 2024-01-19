@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/060f84c3-18f0-4f52-8266-e4e9a4d6e760/resourceGroups/appsvc_linux_centralus_basic/providers/Microsoft.Web/sites/projectprojectkeita",
+    "appService.deploySubpath": "."
+}

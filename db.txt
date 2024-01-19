@@ -1,0 +1,24 @@
+drop table if exists form_data cascade;
+drop table if exists ai_diaries cascade;
+
+CREATE TABLE form_data (
+    id SERIAL PRIMARY KEY,
+    gender CHAR(1),
+    age VARCHAR(255),
+    todays_event TEXT,
+    memorable_thing TEXT,
+    one_word TEXT
+);
+
+
+CREATE TABLE ai_diaries (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255),
+    diaries TEXT,
+    image_name VARCHAR(255),
+    ana_result VARCHAR(255),
+    ana_positive FLOAT,
+    ana_neutral FLOAT,
+    ana_negative FLOAT
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+);
