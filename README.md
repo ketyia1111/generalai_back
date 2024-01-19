@@ -11,7 +11,6 @@ MicrosoftのAzureを使用して、生成AIを使用した絵日記を作成し�
   <img src="5.JPG" width="200" />
   <img src="6.JPG" width="200" />
 </p>
-![Alt text](1.JPG) ![Alt text](2.jpg) ![Alt text](3.JPG) ![Alt text](4.JPG) ![Alt text](5.JPG) ![Alt text](6.JPG)
 
 <p float="left">
   <img src="image-1.png" width="100" />
