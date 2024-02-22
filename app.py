@@ -15,34 +15,36 @@ from flask_sqlalchemy import SQLAlchemy
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 from azure.ai.textanalytics import TextAnalyticsClient
 from azure.core.credentials import AzureKeyCredential
+from dotenv import load_dotenv
 
 
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@hostname/database'
+load_dotenv()
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 db = SQLAlchemy(app)
 
 client = AzureOpenAI(
-  azure_endpoint = "https://your_endpoint/", 
-  api_key="your_api_key",  
-  api_version="your_api_version"
+  azure_endpoint = os.getenv('AZURE_ENDPOINT'), 
+  api_key=os.getenv('API_KEY'),  
+  api_version=os.getenv('API_VERSION')
 )
 
 images = AzureOpenAI(
-    api_version="your_api_version",
-    azure_endpoint="your_endpoint",
-    api_key="your_api_key",
+    api_version=os.getenv('API_VERSION'),
+    azure_endpoint=os.getenv('AZURE_ENDPOINT') + "openai/deployments/Dalle3/images/generations?api-version=2023-06-01-preview",
+    api_key=os.getenv('API_KEY'),
 )
 
 def authenticate_client():
-    ta_credential = AzureKeyCredential("your_key")
+    ta_credential = AzureKeyCredential(os.getenv('TA_CREDENTIAL'))
     text_analytics_client = TextAnalyticsClient(
-            endpoint="https://your_endpoint/",
+            endpoint=os.getenv('TA_ENDPOINT'),
             credential=ta_credential)
     return text_analytics_client
-
 
 class FormData(db.Model):
     __tablename__ = 'form_data'
@@ -77,6 +79,9 @@ class Blog(db.Model):
 
 @app.route('/api', methods=['POST'])
 def api():
+
+    FormData.query.delete()
+    db.session.commit()
 
     data = request.get_json()
 
@@ -117,7 +122,7 @@ def generalai():
         user = f"{age}代の{gender}"
 
         response = client.chat.completions.create(
-            model="your_model",
+            model="ketyia1111",
             messages = 
             [{"role":"system","content":f"あなたは日記クリエータです。{user}になりきり、日記を300字以内で作成してください"},
             {"role":"user","content":f"{today}、{todays_event}がありました。特に印象に残っていることは{memorable_thing}。今日一日は{one_word}だった。"
@@ -168,15 +173,14 @@ def generalai_complete():
 
     image_name += '.png'
     result = images.images.generate(
-        model="your_model",
+        model="dall-e-3",
         prompt=text,
         n=1
     )
-
     image_url = json.loads(result.model_dump_json())['data'][0]['url']
 
     # BlobServiceClientオブジェクトを作成します
-    blob_service_client = BlobServiceClient.from_connection_string("your_connection_string")
+    blob_service_client = BlobServiceClient.from_connection_string(os.getenv('BLOB_CONNECTION_STRING'))
 
     # BlobClientオブジェクトを作成します
     blob_client = blob_service_client.get_blob_client("images", image_name)
@@ -187,7 +191,7 @@ def generalai_complete():
 
     # Blobにアップロードします
     blob_client.upload_blob(response.raw, blob_type="BlockBlob", length=None)
-
+    
     ai_diaries = AiDiaries(
         username=name,
         diaries=text,
